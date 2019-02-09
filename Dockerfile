@@ -1,4 +1,4 @@
-FROM node
+FROM node:11.9.0
 
 COPY src /src
 RUN cd /src/client && npm install
