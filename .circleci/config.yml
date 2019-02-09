@@ -15,11 +15,11 @@ jobs:
       - setup_remote_docker
 
       - run:
-        name: Install Dependencies
-        command: |
-          echo Installing Dependencies...
+          name: Install Dependencies
+          command: |
+            echo Installing Dependencies...
 
       - run:
-        name: Build Docker Image
-        command: |
-          docker build -t todoclient:${CIRCLE_SHA1}
+          name: Build Docker Image
+          command: |
+            docker build -t todoclient:${CIRCLE_SHA1}
