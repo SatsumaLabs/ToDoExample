@@ -6,11 +6,19 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:17.05.0-ce-git
+      # - image: docker:17.05.0-ce-git
+      - image: google/cloud-sdk
 
     working_directory: ~/repo
 
     steps:
+      - run:
+          name: Configure GCloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY | sudo gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+
       - checkout
       - setup_remote_docker
 
@@ -22,4 +30,9 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build -t todoclient:${CIRCLE_SHA1} .
+            docker build -t us.gcr.io/${GOOGLE_PROJECT_ID}/todoclient:${CIRCLE_SHA1} .
+
+      - run:
+          name: Push Docker Image to GCR
+          command: |
+            docker push us.gcr.io/${GOOGLE_PROJECT_ID}/todoclient:${CIRCLE_SHA1}
