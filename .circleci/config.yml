@@ -6,12 +6,20 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:11.9.0
+      - image: docker:17.05.0-ce-git
 
     working_directory: ~/repo
 
     steps:
       - checkout
-      - run: ls -la
-      - run: cd ./src/client && yarn install
-      - run: cd ./src/client && npm run-script build
+      - setup_remote_docker
+
+      - run:
+        name: Install Dependencies
+        command: |
+          echo Installing Dependencies...
+
+      - run:
+        name: Build Docker Image
+        command: |
+          docker build -t todoclient:${CIRCLE_SHA1}
