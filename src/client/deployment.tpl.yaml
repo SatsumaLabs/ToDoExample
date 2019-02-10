@@ -1,0 +1,16 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: todo-example-client-deployment
+spec:
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: todo-example-client
+    spec:
+      containers:
+        - name: todoexample
+          image: us.gcr.io/poised-legend-231221/todoclient:%CIRCLE_SHA1%
+          ports:
+            - containerPort: 5000

@@ -37,3 +37,10 @@ jobs:
           command: |
             gcloud auth configure-docker
             docker push us.gcr.io/${GOOGLE_PROJECT_ID}/todoclient:${CIRCLE_SHA1}
+
+      - run:
+          name: Deploy To Cluster
+          command: |
+            gcloud container clusters get-credentials ${GOOGLE_K8S_CLUSTER} --zone ${GOOGLE_COMPUTE_ZONE} --project ${GOOGLE_PROJECT_ID}
+            cd src/client && sed "s/%CIRCLE_SHA1%/"${CIRCLE_SHA1}"/" deployment.tpl.yaml > deployment.yaml
+            kubectl apply -f deployment.yaml
